@@ -13,5 +13,9 @@ public class Main{
         a.setNewAresta(ab);
         a.setNewAresta(ac);
         
+        Navegador navegador = new Navegador();
+
+        navegador.calcularRota(a, c);
+        navegador.listarMelhorCaminho();
     }
 }

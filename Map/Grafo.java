@@ -35,10 +35,18 @@ public class Grafo {
         this.nome = nome;
     }
 
+    /**
+     * Inclui em uma lista interna do grafo uma nova ligação para outro 
+     * @param aresta
+     */
     public void setNewAresta(Aresta aresta){
         this.listaArestas.add(aresta);
     }
 
+    /**
+     * Retorna as ligações existentes ao grafo
+     * @return List<Aresta>
+     */
     public List<Aresta> getListaArestas() {
         return listaArestas;
     }

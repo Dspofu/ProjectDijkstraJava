@@ -11,11 +11,24 @@ public class Navegador {
 
     public void calcularRota(Grafo inicio, Grafo destino){
         this.atual = inicio;
-        List<Aresta> listaArestas = new ArrayList<>();
-           
+        caminho.add(inicio);
+        Grafo grafoMenor = null;
+        double distanciaMenor = Double.MAX_VALUE;
+        for (Aresta aresta : atual.getListaArestas()) {
+            if (aresta.getDistancia() < distanciaMenor) {
+                distanciaMenor = aresta.getDistancia();
+                grafoMenor = aresta.getGrafo();
+            }
+        } 
+        caminho.add(grafoMenor);
+        listarMelhorCaminho();
+        caminho.clear();
     }
 
-    public void verificarMelhorRota(){
+    public void listarMelhorCaminho(){
+        for (Grafo grafo : caminho) {
+            System.out.print(" -> "+grafo.getNome());
+            
+        }
     }
-
 }
