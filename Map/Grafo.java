@@ -29,6 +29,11 @@ public class Grafo {
     return nome;
   }
 
+  @Override
+  public String toString() {
+    return this.getNome(); // ou apenas nome, se for público
+  }
+
   /**
    * Altera o nome do grafo.
    * 
