@@ -4,6 +4,7 @@ import Map.Aresta;
 import Map.Grafo;
 
 public class Navegador {
+  @SuppressWarnings("unused")
   private Grafo atual;
   private List<Grafo> caminho = new LinkedList<>();
   private Map<Grafo, Double> distancias = new HashMap<>(); // Distâncias de cada grafo
