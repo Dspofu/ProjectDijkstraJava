@@ -25,18 +25,52 @@ public class Main extends JFrame {
     Grafo rio = new Grafo("Rio de Janeiro");
     Grafo curitiba = new Grafo("Curitiba");
     Grafo portoAlegre = new Grafo("Porto Alegre");
+    Grafo recife = new Grafo("Recife");
+    Grafo fortaleza = new Grafo("Fortaleza");
+    Grafo brasilia = new Grafo("Brasília");
+    Grafo goiania = new Grafo("Goiânia");
+    Grafo natal = new Grafo("Natal");
+    Grafo vitoria = new Grafo("Vitória");
+    Grafo maceio = new Grafo("Maceió");
 
     // Adicionar arestas
-    sp.setNewAresta(new Aresta(bh, 600));
-    sp.setNewAresta(new Aresta(rio, 400));
-    sp.setNewAresta(new Aresta(curitiba, 400));
-    bh.setNewAresta(new Aresta(salvador, 1000));
-    rio.setNewAresta(new Aresta(curitiba, 300));
-    rio.setNewAresta(new Aresta(portoAlegre, 1200));
-    curitiba.setNewAresta(new Aresta(portoAlegre, 600));
-    salvador.setNewAresta(new Aresta(portoAlegre, 1600));
+    sp.setNewAresta(new Aresta(bh, 600)); 
+    bh.setNewAresta(new Aresta(sp, 600));
 
-    Grafo[] cidades = { sp, bh, salvador, rio, curitiba, portoAlegre };
+    sp.setNewAresta(new Aresta(rio, 400)); 
+    rio.setNewAresta(new Aresta(sp, 400));
+
+    sp.setNewAresta(new Aresta(curitiba, 400)); 
+    curitiba.setNewAresta(new Aresta(sp, 400));
+
+    sp.setNewAresta(new Aresta(portoAlegre, 1100)); 
+    portoAlegre.setNewAresta(new Aresta(sp, 1100));
+
+    bh.setNewAresta(new Aresta(salvador, 1000)); 
+    salvador.setNewAresta(new Aresta(bh, 1000));
+
+    bh.setNewAresta(new Aresta(vitoria, 520)); 
+    vitoria.setNewAresta(new Aresta(bh, 520));
+
+    bh.setNewAresta(new Aresta(goiania, 400)); 
+    goiania.setNewAresta(new Aresta(bh, 400));
+
+    salvador.setNewAresta(new Aresta(recife, 800)); 
+    recife.setNewAresta(new Aresta(salvador, 800));
+
+    recife.setNewAresta(new Aresta(fortaleza, 800)); 
+    fortaleza.setNewAresta(new Aresta(recife, 800));
+
+    fortaleza.setNewAresta(new Aresta(natal, 200)); 
+    natal.setNewAresta(new Aresta(fortaleza, 200));
+
+    brasilia.setNewAresta(new Aresta(goiania, 200)); 
+    goiania.setNewAresta(new Aresta(brasilia, 200));
+
+    maceio.setNewAresta(new Aresta(bh, 700));
+    bh.setNewAresta(new Aresta(maceio, 700));
+
+    Grafo[] cidades = { sp, bh, salvador, rio, curitiba, portoAlegre, recife, fortaleza, brasilia, goiania, natal, vitoria, maceio };
 
     JPanel inputPanel = new JPanel();
     inputPanel.setLayout(new GridLayout(3, 2));
