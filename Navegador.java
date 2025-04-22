@@ -5,9 +5,9 @@ import Map.Grafo;
 
 public class Navegador {
   private Grafo atual;
-  private List<Grafo> caminho = new LinkedList<Grafo>();
-  private Map<Grafo, Double> distancias = new HashMap<>();  // Mapear distância de cada grafo
-  private Map<Grafo, Grafo> predecessores = new HashMap<>(); // Mapear predecessores para reconstruir o caminho
+  private List<Grafo> caminho = new LinkedList<>();
+  private Map<Grafo, Double> distancias = new HashMap<>();  // Distâncias de cada grafo
+  private Map<Grafo, Grafo> predecessores = new HashMap<>(); // Predecessores para reconstruir o caminho
 
   public void calcularRota(Grafo inicio, Grafo destino) {
     // Limpar caminho e distâncias antes de calcular novamente
@@ -17,8 +17,8 @@ public class Navegador {
 
     this.atual = inicio;
 
-    // Inicializando as distâncias e predecessores
-    distancias.put(inicio, 0.0);  // A distância até o nó inicial é 0
+    // Inicializando a distância do nó inicial e os predecessores
+    distancias.put(inicio, 0.0);
     Queue<Grafo> todosOsGrafos = new LinkedList<>();
     todosOsGrafos.add(inicio);
 
@@ -34,20 +34,20 @@ public class Navegador {
         }
     }
 
-    // Fila de prioridade para Dijkstra
+    // Fila de prioridade para Dijkstra, com a distância como chave
     PriorityQueue<Grafo> pq = new PriorityQueue<>(Comparator.comparingDouble(distancias::get));
     pq.add(inicio);
 
-    // Dijkstra: A cada iteração, tenta relaxar as arestas
+    // Algoritmo de Dijkstra: A cada iteração, tenta relaxar as arestas
     while (!pq.isEmpty()) {
-        Grafo u = pq.poll();
+        Grafo u = pq.poll();  // Pega o grafo de menor distância
         for (Aresta aresta : u.getListaArestas()) {
             Grafo v = aresta.getGrafo();
             double novaDistancia = distancias.get(u) + aresta.getDistancia();
             if (novaDistancia < distancias.get(v)) {
                 distancias.put(v, novaDistancia);
                 predecessores.put(v, u);
-                pq.add(v);
+                pq.add(v); // Re-insere o grafo para garantir a escolha do próximo menor
             }
         }
     }
@@ -59,12 +59,11 @@ public class Navegador {
         current = predecessores.get(current);
     }
 
-    Collections.reverse(caminho); // Invertendo a lista para ter o caminho de início a destino
-    listarMelhorCaminho();  // Agora sem parâmetros, pois a lógica já está dentro da classe
+    Collections.reverse(caminho); // Invertendo a lista para ter o caminho de origem a destino
+    listarMelhorCaminho();
   }
 
   public void listarMelhorCaminho() {
-    // Exibindo a origem e o destino
     if (caminho.isEmpty()) {
         System.out.println("Não foi possível encontrar um caminho entre os pontos.");
         return;
@@ -73,14 +72,7 @@ public class Navegador {
     Grafo origem = caminho.get(0);
     Grafo destino = caminho.get(caminho.size() - 1);
 
-    // System.out.println(caminho.get(1).getNome());
-
-    // Verificar se o destino foi alcançado
-    if (!distancias.containsKey(destino) || distancias.get(destino) == Double.MAX_VALUE) {
-        System.out.println("Não foi possível encontrar um caminho entre " + origem.getNome() + " e " + destino.getNome() + ".");
-        return;
-    }
-
+    // Exibindo a origem e o destino
     System.out.println("Origem: " + origem.getNome() + "\nDestino: " + destino.getNome());
 
     // Exibindo o caminho percorrido
@@ -92,8 +84,12 @@ public class Navegador {
         }
     }
 
-    // Exibindo a distância total
+    // Verificando se a distância final foi calculada corretamente
     double distanciaTotal = distancias.get(destino);
-    System.out.println("\nDistância total: " + distanciaTotal + " km");
+    if (distanciaTotal == Double.MAX_VALUE) {
+        System.out.println("\nNão foi possível encontrar um caminho válido.");
+    } else {
+        System.out.println("\nDistância total: " + distanciaTotal + " km");
+    }
   }
 }

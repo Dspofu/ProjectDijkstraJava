@@ -39,6 +39,6 @@ public class Main {
     navegador.calcularRota(sp, portoAlegre);  // sp é São Paulo e portoAlegre é Porto Alegre
 
     // Exibindo o caminho e a distância total
-    navegador.listarMelhorCaminho();
+    //navegador.listarMelhorCaminho();
   }
 }
