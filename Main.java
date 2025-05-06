@@ -80,8 +80,8 @@ public class Main extends JFrame {
     conectarBidirecional(brasilia, palmas, 970);
 
     conectarBidirecional(palmas, belem, 990);
-    conectarBidirecional(belem, macapa, 530); // via barco
-    conectarBidirecional(belem, manaus, 1600); // rodovia
+    conectarBidirecional(belem, macapa, 530);
+    conectarBidirecional(belem, manaus, 1600);
 
     conectarBidirecional(manaus, boaVista, 750);
     conectarBidirecional(manaus, portoVelho, 900);
@@ -89,11 +89,7 @@ public class Main extends JFrame {
 
     conectarBidirecional(campoGrande, cuiaba, 700);
 
-    Grafo[] cidades = {
-      sp, bh, salvador, rio, curitiba, portoAlegre, recife, fortaleza, brasilia,
-      goiania, natal, vitoria, maceio, manaus, belem, palmas, saoLuis, teresina,
-      joaoPessoa, aracaju, campoGrande, cuiaba, portoVelho, rioBranco, macapa, boaVista
-    };
+    Grafo[] cidades = { sp, bh, salvador, rio, curitiba, portoAlegre, recife, fortaleza, brasilia, goiania, natal, vitoria, maceio, manaus, belem, palmas, saoLuis, teresina, joaoPessoa, aracaju, campoGrande, cuiaba, portoVelho, rioBranco, macapa, boaVista };
 
     JPanel inputPanel = new JPanel();
     inputPanel.setLayout(new GridLayout(3, 2));
@@ -130,9 +126,7 @@ public class Main extends JFrame {
         if (origem != null && destino != null) {
           navegador.calcularRota(origem, destino);
           resultadoArea.setText(navegador.getMelhorCaminhoComoTexto());
-        } else {
-          resultadoArea.setText("Selecione origem e destino.");
-        }
+        } else { resultadoArea.setText("Selecione origem e destino."); }
       }
     });
 
