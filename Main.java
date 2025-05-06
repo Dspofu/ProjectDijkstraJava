@@ -89,6 +89,12 @@ public class Main extends JFrame {
 
     conectarBidirecional(campoGrande, cuiaba, 700);
 
+    conectarBidirecional(vitoria, salvador, 1200);
+    conectarBidirecional(portoAlegre, campoGrande, 1400);
+    conectarBidirecional(salvador, brasilia, 1450);
+    conectarBidirecional(teresina, palmas, 970);
+    conectarBidirecional(cuiaba, portoVelho, 1450);
+
     Grafo[] cidades = { sp, bh, salvador, rio, curitiba, portoAlegre, recife, fortaleza, brasilia, goiania, natal, vitoria, maceio, manaus, belem, palmas, saoLuis, teresina, joaoPessoa, aracaju, campoGrande, cuiaba, portoVelho, rioBranco, macapa, boaVista };
 
     JPanel inputPanel = new JPanel();
