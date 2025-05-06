@@ -16,6 +16,9 @@ O projeto contém os seguintes arquivos principas:
 - `Navegador.java`: Responsável pela lógica de navegação e aplicação do algoritmo de Dijkstra.
 - `Map.java`: Representa o grafo utilizado pelo algorito.
 
+## 💻 Apresentação
+- [Slide de apresentação](https://www.canva.com/design/DAGmtqENOoE/T6WXAxBQxlyLmGmGss3gzQ/view?utm_content=DAGmtqENOoE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h6b6032b721)
+
 ## 🧑‍💻 Contribuidors
 
 - [@Dspofu](https://github.com/Dspofu)
