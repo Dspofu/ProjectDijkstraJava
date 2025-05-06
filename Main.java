@@ -120,7 +120,7 @@ public class Main extends JFrame {
         Grafo origem = (Grafo) origemCombo.getSelectedItem();
         Grafo destino = (Grafo) destinoCombo.getSelectedItem();
         if (origem.equals(destino)) {
-          resultadoArea.setText("Origem e destino devem ser diferentes.");
+          JOptionPane.showMessageDialog(null, "Origem e destino devem ser diferentes.");
           return;
         }
         if (origem != null && destino != null) {
@@ -134,7 +134,7 @@ public class Main extends JFrame {
     setVisible(true);
   }
 
-  // Método auxiliar para criar conexões bidirecionais
+  // Criar conexões bidirecionais
   private static void conectarBidirecional(Grafo a, Grafo b, int distancia) {
     a.setNewAresta(new Aresta(b, distancia));
     b.setNewAresta(new Aresta(a, distancia));
