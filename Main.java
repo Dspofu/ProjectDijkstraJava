@@ -32,45 +32,68 @@ public class Main extends JFrame {
     Grafo natal = new Grafo("Natal");
     Grafo vitoria = new Grafo("Vitória");
     Grafo maceio = new Grafo("Maceió");
+    Grafo manaus = new Grafo("Manaus");
+    Grafo belem = new Grafo("Belém");
+    Grafo palmas = new Grafo("Palmas");
+    Grafo saoLuis = new Grafo("São Luís");
+    Grafo teresina = new Grafo("Teresina");
+    Grafo joaoPessoa = new Grafo("João Pessoa");
+    Grafo aracaju = new Grafo("Aracaju");
+    Grafo campoGrande = new Grafo("Campo Grande");
+    Grafo cuiaba = new Grafo("Cuiabá");
+    Grafo portoVelho = new Grafo("Porto Velho");
+    Grafo rioBranco = new Grafo("Rio Branco");
+    Grafo macapa = new Grafo("Macapá");
+    Grafo boaVista = new Grafo("Boa Vista");
 
-    // Adicionar arestas
-    sp.setNewAresta(new Aresta(bh, 600)); 
-    bh.setNewAresta(new Aresta(sp, 600));
+    // Conexões bidirecionais
+    conectarBidirecional(sp, rio, 430);
+    conectarBidirecional(sp, curitiba, 410);
+    conectarBidirecional(sp, bh, 580);
+    conectarBidirecional(sp, brasilia, 1015);
+    conectarBidirecional(sp, campoGrande, 990);
 
-    sp.setNewAresta(new Aresta(rio, 400)); 
-    rio.setNewAresta(new Aresta(sp, 400));
+    conectarBidirecional(rio, vitoria, 520);
+    conectarBidirecional(rio, bh, 440);
 
-    sp.setNewAresta(new Aresta(curitiba, 400)); 
-    curitiba.setNewAresta(new Aresta(sp, 400));
+    conectarBidirecional(bh, goiania, 910);
+    conectarBidirecional(bh, salvador, 1370);
+    conectarBidirecional(bh, maceio, 1600);
 
-    sp.setNewAresta(new Aresta(portoAlegre, 1100)); 
-    portoAlegre.setNewAresta(new Aresta(sp, 1100));
+    conectarBidirecional(curitiba, portoAlegre, 710);
+    conectarBidirecional(curitiba, campoGrande, 990);
 
-    bh.setNewAresta(new Aresta(salvador, 1000)); 
-    salvador.setNewAresta(new Aresta(bh, 1000));
+    conectarBidirecional(portoAlegre, cuiaba, 1900);
 
-    bh.setNewAresta(new Aresta(vitoria, 520)); 
-    vitoria.setNewAresta(new Aresta(bh, 520));
+    conectarBidirecional(salvador, aracaju, 330);
+    conectarBidirecional(aracaju, maceio, 280);
+    conectarBidirecional(maceio, recife, 260);
+    conectarBidirecional(recife, joaoPessoa, 120);
+    conectarBidirecional(joaoPessoa, natal, 180);
+    conectarBidirecional(natal, fortaleza, 520);
+    conectarBidirecional(fortaleza, teresina, 630);
+    conectarBidirecional(teresina, saoLuis, 450);
+    conectarBidirecional(saoLuis, belem, 800);
 
-    bh.setNewAresta(new Aresta(goiania, 400)); 
-    goiania.setNewAresta(new Aresta(bh, 400));
+    conectarBidirecional(brasilia, goiania, 210);
+    conectarBidirecional(brasilia, cuiaba, 1130);
+    conectarBidirecional(brasilia, palmas, 970);
 
-    salvador.setNewAresta(new Aresta(recife, 800)); 
-    recife.setNewAresta(new Aresta(salvador, 800));
+    conectarBidirecional(palmas, belem, 990);
+    conectarBidirecional(belem, macapa, 530); // via barco
+    conectarBidirecional(belem, manaus, 1600); // rodovia
 
-    recife.setNewAresta(new Aresta(fortaleza, 800)); 
-    fortaleza.setNewAresta(new Aresta(recife, 800));
+    conectarBidirecional(manaus, boaVista, 750);
+    conectarBidirecional(manaus, portoVelho, 900);
+    conectarBidirecional(portoVelho, rioBranco, 510);
 
-    fortaleza.setNewAresta(new Aresta(natal, 200)); 
-    natal.setNewAresta(new Aresta(fortaleza, 200));
+    conectarBidirecional(campoGrande, cuiaba, 700);
 
-    brasilia.setNewAresta(new Aresta(goiania, 200)); 
-    goiania.setNewAresta(new Aresta(brasilia, 200));
-
-    maceio.setNewAresta(new Aresta(bh, 700));
-    bh.setNewAresta(new Aresta(maceio, 700));
-
-    Grafo[] cidades = { sp, bh, salvador, rio, curitiba, portoAlegre, recife, fortaleza, brasilia, goiania, natal, vitoria, maceio };
+    Grafo[] cidades = {
+      sp, bh, salvador, rio, curitiba, portoAlegre, recife, fortaleza, brasilia,
+      goiania, natal, vitoria, maceio, manaus, belem, palmas, saoLuis, teresina,
+      joaoPessoa, aracaju, campoGrande, cuiaba, portoVelho, rioBranco, macapa, boaVista
+    };
 
     JPanel inputPanel = new JPanel();
     inputPanel.setLayout(new GridLayout(3, 2));
@@ -100,6 +123,10 @@ public class Main extends JFrame {
       public void actionPerformed(ActionEvent e) {
         Grafo origem = (Grafo) origemCombo.getSelectedItem();
         Grafo destino = (Grafo) destinoCombo.getSelectedItem();
+        if (origem.equals(destino)) {
+          resultadoArea.setText("Origem e destino devem ser diferentes.");
+          return;
+        }
         if (origem != null && destino != null) {
           navegador.calcularRota(origem, destino);
           resultadoArea.setText(navegador.getMelhorCaminhoComoTexto());
@@ -111,6 +138,12 @@ public class Main extends JFrame {
 
     setLocationRelativeTo(null);
     setVisible(true);
+  }
+
+  // Método auxiliar para criar conexões bidirecionais
+  private static void conectarBidirecional(Grafo a, Grafo b, int distancia) {
+    a.setNewAresta(new Aresta(b, distancia));
+    b.setNewAresta(new Aresta(a, distancia));
   }
 
   public static void main(String[] args) {
