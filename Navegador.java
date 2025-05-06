@@ -7,18 +7,16 @@ public class Navegador {
   @SuppressWarnings("unused")
   private Grafo atual;
   private List<Grafo> caminho = new LinkedList<>();
-  private Map<Grafo, Double> distancias = new HashMap<>(); // Distâncias de cada grafo
-  private Map<Grafo, Grafo> predecessores = new HashMap<>(); // Predecessores para reconstruir o caminho
+  private Map<Grafo, Double> distancias = new HashMap<>();
+  private Map<Grafo, Grafo> predecessores = new HashMap<>();
 
   public void calcularRota(Grafo inicio, Grafo destino) {
-    // Limpar caminho e distâncias antes de calcular novamente
     caminho.clear();
     distancias.clear();
     predecessores.clear();
 
     this.atual = inicio;
 
-    // Inicializando a distância do nó inicial e os predecessores
     distancias.put(inicio, 0.0);
     Queue<Grafo> todosOsGrafos = new LinkedList<>();
     todosOsGrafos.add(inicio);
@@ -39,7 +37,6 @@ public class Navegador {
     PriorityQueue<Grafo> pq = new PriorityQueue<>(Comparator.comparingDouble(distancias::get));
     pq.add(inicio);
 
-    // Algoritmo de Dijkstra: A cada iteração, tenta relaxar as arestas
     while (!pq.isEmpty()) {
       Grafo u = pq.poll(); // Pega o grafo de menor distância
       for (Aresta aresta : u.getListaArestas()) {
@@ -48,7 +45,7 @@ public class Navegador {
         if (novaDistancia < distancias.get(v)) {
           distancias.put(v, novaDistancia);
           predecessores.put(v, u);
-          pq.add(v); // Re-insere o grafo para garantir a escolha do próximo menor
+          pq.add(v); // insere o grafo para garantir a escolha do próximo menor
         }
       }
     }
@@ -60,7 +57,7 @@ public class Navegador {
       current = predecessores.get(current);
     }
 
-    Collections.reverse(caminho); // Invertendo a lista para ter o caminho de origem a destino
+    Collections.reverse(caminho);
     listarMelhorCaminho();
   }
 
@@ -85,7 +82,7 @@ public class Navegador {
       }
     }
 
-    // Verificando se a distância final foi calculada corretamente
+    // Exibindo no terminal a distância final que foi calculada
     double distanciaTotal = distancias.get(destino);
     if (distanciaTotal == Double.MAX_VALUE) {
       System.out.println("\nNão foi possível encontrar um caminho válido.");
