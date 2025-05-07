@@ -45,6 +45,7 @@ public class Main extends JFrame {
     Grafo rioBranco = new Grafo("Rio Branco");
     Grafo macapa = new Grafo("Macapá");
     Grafo boaVista = new Grafo("Boa Vista");
+    Grafo florianopolis = new Grafo("Florianópolis"); // ADICIONADO
 
     // Conexões bidirecionais
     conectarBidirecional(sp, rio, 430);
@@ -62,8 +63,11 @@ public class Main extends JFrame {
 
     conectarBidirecional(curitiba, portoAlegre, 710);
     conectarBidirecional(curitiba, campoGrande, 990);
+    conectarBidirecional(curitiba, florianopolis, 300); // ADICIONADO (ou florianopolis, curitiba)
 
     conectarBidirecional(portoAlegre, cuiaba, 1900);
+    conectarBidirecional(portoAlegre, campoGrande, 1400);
+    conectarBidirecional(portoAlegre, florianopolis, 470); // ADICIONADO (ou florianopolis, portoAlegre)
 
     conectarBidirecional(salvador, aracaju, 330);
     conectarBidirecional(aracaju, maceio, 280);
@@ -78,24 +82,34 @@ public class Main extends JFrame {
     conectarBidirecional(brasilia, goiania, 210);
     conectarBidirecional(brasilia, cuiaba, 1130);
     conectarBidirecional(brasilia, palmas, 970);
+    conectarBidirecional(brasilia, salvador, 1450);
 
     conectarBidirecional(palmas, belem, 990);
+    conectarBidirecional(palmas, teresina, 970);
+
     conectarBidirecional(belem, macapa, 530);
     conectarBidirecional(belem, manaus, 1600);
 
     conectarBidirecional(manaus, boaVista, 750);
     conectarBidirecional(manaus, portoVelho, 900);
     conectarBidirecional(portoVelho, rioBranco, 510);
+    conectarBidirecional(portoVelho, cuiaba, 1450);
 
     conectarBidirecional(campoGrande, cuiaba, 700);
 
     conectarBidirecional(vitoria, salvador, 1200);
-    conectarBidirecional(portoAlegre, campoGrande, 1400);
-    conectarBidirecional(salvador, brasilia, 1450);
-    conectarBidirecional(teresina, palmas, 970);
-    conectarBidirecional(cuiaba, portoVelho, 1450);
 
-    Grafo[] cidades = { sp, bh, salvador, rio, curitiba, portoAlegre, recife, fortaleza, brasilia, goiania, natal, vitoria, maceio, manaus, belem, palmas, saoLuis, teresina, joaoPessoa, aracaju, campoGrande, cuiaba, portoVelho, rioBranco, macapa, boaVista };
+    // --- NOVAS SUGESTÕES DE CONEXÕES DA RESPOSTA ANTERIOR (se desejar mantê-las)
+    // ---
+    conectarBidirecional(goiania, campoGrande, 900);
+    conectarBidirecional(goiania, cuiaba, 900);
+    conectarBidirecional(salvador, recife, 840);
+    conectarBidirecional(teresina, salvador, 1000);
+    conectarBidirecional(saoLuis, palmas, 1100);
+
+    Grafo[] cidades = { sp, bh, salvador, rio, curitiba, portoAlegre, recife, fortaleza, brasilia, goiania, natal,
+        vitoria, maceio, manaus, belem, palmas, saoLuis, teresina, joaoPessoa, aracaju, campoGrande, cuiaba, portoVelho,
+        rioBranco, macapa, boaVista };
 
     JPanel inputPanel = new JPanel();
     inputPanel.setLayout(new GridLayout(3, 2));
@@ -132,7 +146,9 @@ public class Main extends JFrame {
         if (origem != null && destino != null) {
           navegador.calcularRota(origem, destino);
           resultadoArea.setText(navegador.getMelhorCaminhoComoTexto());
-        } else { resultadoArea.setText("Selecione origem e destino."); }
+        } else {
+          resultadoArea.setText("Selecione origem e destino.");
+        }
       }
     });
 
