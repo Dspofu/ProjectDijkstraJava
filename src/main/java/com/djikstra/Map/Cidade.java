@@ -9,43 +9,57 @@ import java.util.Objects;
  * Contém o nome, coordenadas geográficas e a lista de arestas (vizinhos).
  */
 public class Cidade {
-    private final String nome;
-    private final double latitude;
-    private final double longitude;
-    private final List<Aresta> vizinhos = new LinkedList<>();
+  private final String nome;
+  private final double latitude;
+  private final double longitude;
+  private final List<Aresta> vizinhos = new LinkedList<>();
 
-    public Cidade(String nome, double latitude, double longitude) {
-        this.nome = nome;
-        this.latitude = latitude;
-        this.longitude = longitude;
-    }
+  public Cidade(String nome, double latitude, double longitude) {
+    this.nome = nome;
+    this.latitude = latitude;
+    this.longitude = longitude;
+  }
 
-    public void adicionarVizinho(Aresta aresta) {
-        this.vizinhos.add(aresta);
-    }
+  public void adicionarVizinho(Aresta aresta) {
+    this.vizinhos.add(aresta);
+  }
 
-    // Getters
-    public String getNome() { return nome; }
-    public double getLatitude() { return latitude; }
-    public double getLongitude() { return longitude; }
-    public List<Aresta> getVizinhos() { return vizinhos; }
+  // Getters
+  public String getNome() {
+    return nome;
+  }
 
-    @Override
-    public String toString() {
-        return this.nome; // Usado para exibição nos JComboBox
-    }
+  public double getLatitude() {
+    return latitude;
+  }
 
-    // É importante sobrescrever equals e hashCode para o correto funcionamento em Maps e Sets
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Cidade cidade = (Cidade) o;
-        return Objects.equals(nome, cidade.nome);
-    }
+  public double getLongitude() {
+    return longitude;
+  }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(nome);
-    }
+  public List<Aresta> getVizinhos() {
+    return vizinhos;
+  }
+
+  @Override
+  public String toString() {
+    return this.nome; // Usado para exibição nos JComboBox
+  }
+
+  // É importante sobrescrever equals e hashCode para o correto funcionamento em
+  // Maps e Sets
+  @Override
+  public boolean equals(Object o) {
+    if (this == o)
+      return true;
+    if (o == null || getClass() != o.getClass())
+      return false;
+    Cidade cidade = (Cidade) o;
+    return Objects.equals(nome, cidade.nome);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(nome);
+  }
 }

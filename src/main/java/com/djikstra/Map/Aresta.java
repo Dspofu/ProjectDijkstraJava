@@ -5,19 +5,19 @@ package com.djikstra.Map;
  * Contém a cidade de destino e a distância (peso).
  */
 public class Aresta {
-    private final Cidade destino;
-    private final int distancia;
+  private final Cidade destino;
+  private final int distancia;
 
-    public Aresta(Cidade destino, int distancia) {
-        this.destino = destino;
-        this.distancia = distancia;
-    }
+  public Aresta(Cidade destino, int distancia) {
+    this.destino = destino;
+    this.distancia = distancia;
+  }
 
-    public Cidade getDestino() {
-        return destino;
-    }
+  public Cidade getDestino() {
+    return destino;
+  }
 
-    public int getDistancia() {
-        return distancia;
-    }
+  public int getDistancia() {
+    return distancia;
+  }
 }
