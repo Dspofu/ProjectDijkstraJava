@@ -1,16 +1,17 @@
-package com.djikstra;
+package com.dijkstra;
 
-import com.djikstra.Map.Cidade;
-import com.djikstra.Map.Grafo;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.OSMTileFactoryInfo;
 import org.jxmapviewer.input.PanMouseInputListener;
 import org.jxmapviewer.input.ZoomMouseWheelListenerCenter;
 import org.jxmapviewer.painter.CompoundPainter;
 import org.jxmapviewer.viewer.*;
-import com.djikstra.ui.CustomWaypoint;
-import com.djikstra.ui.RoutePainter;
-import com.djikstra.ui.CustomWaypointRenderer;
+
+import com.dijkstra.Map.Cidade;
+import com.dijkstra.Map.Grafo;
+import com.dijkstra.ui.CustomWaypoint;
+import com.dijkstra.ui.CustomWaypointRenderer;
+import com.dijkstra.ui.RoutePainter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -118,15 +119,23 @@ public class VisualizadorDeRotas extends JFrame {
     mapViewer.setZoom(14);
   }
 
+  // Adicione esta variável de instância no início da classe VisualizadorDeRotas
+  private final Map<String, CustomWaypoint> waypointsMap = new HashMap<>();
+
   private void adicionarWaypointsCidades() {
-    Set<CustomWaypoint> waypoints = new HashSet<>();
+    // Note que não estamos mais usando um Set aqui, para poder guardar no painter
+    // depois
+    List<CustomWaypoint> waypoints = new ArrayList<>();
     for (Cidade cidade : grafo.getCidades()) {
-      waypoints.add(new CustomWaypoint(cidade.getNome(),
-          new GeoPosition(cidade.getLatitude(), cidade.getLongitude())));
+      CustomWaypoint wp = new CustomWaypoint(cidade.getNome(),
+          new GeoPosition(cidade.getLatitude(), cidade.getLongitude()));
+
+      waypoints.add(wp);
+      waypointsMap.put(cidade.getNome(), wp); // Guarda o waypoint no mapa
     }
 
     WaypointPainter<CustomWaypoint> waypointPainter = new WaypointPainter<>();
-    waypointPainter.setWaypoints(waypoints);
+    waypointPainter.setWaypoints(new HashSet<>(waypoints)); // O painter ainda precisa de um Set
     waypointPainter.setRenderer(new CustomWaypointRenderer());
     painter.addPainter(waypointPainter);
   }
@@ -365,7 +374,6 @@ public class VisualizadorDeRotas extends JFrame {
     lblStatus.setFont(new Font("Segoe UI", Font.PLAIN, 12));
     lblStatus.setForeground(SUCCESS_COLOR);
 
-    // --- ALTERAÇÃO AQUI ---
     // Para exibir o emoji, é preciso usar uma fonte que o suporte.
     // "Segoe UI Emoji" funciona bem no Windows. "SansSerif" é um fallback.
     JLabel creditos = new JLabel("Desenvolvido usando algoritmo de Dijkstra");
@@ -479,50 +487,88 @@ public class VisualizadorDeRotas extends JFrame {
   }
 
   private void processarResultado(Navegador.Resultado resultado, Cidade origem, Cidade destino) {
+    // (Presume que 'waypointsMap' e as cores estão definidas como membros da
+    // classe)
+
+    // 1. Reseta a cor de todos os waypoints para o padrão antes de cada cálculo
+    final Color COR_PADRAO = new Color(37, 99, 235); // Azul padrão
+    if (waypointsMap != null) {
+      waypointsMap.values().forEach(wp -> wp.setButtonColor(COR_PADRAO));
+    }
+
+    // Remove o pintor da rota anterior, se houver
     if (rotaAtualPainter != null) {
       painter.removePainter(rotaAtualPainter);
     }
 
     if (!resultado.temCaminho()) {
+      // --- CASO NENHUMA ROTA SEJA ENCONTRADA ---
       lblStatus.setText("Nenhuma rota encontrada");
       lblStatus.setForeground(DANGER_COLOR);
 
-      // Limpar resultados
+      // Limpar painel de resultados
       lblDistanciaTotal.setText("-- km");
-      textAreaRota.setText("Nenhuma rota encontrada");
+      textAreaRota.setText("Nenhuma rota foi encontrada entre " + origem.getNome() + " e " + destino.getNome() + ".");
       lblTempoEstimado.setText("-- horas");
 
-      mostrarMensagem("Rota não encontrada", "Não foi possível encontrar uma rota entre " + origem.getNome() + " e " + destino.getNome() + ".", WARNING_COLOR);
+      // Pode manter suas chamadas de mensagem se as tiver
+      // mostrarMensagem("Rota não encontrada", "Não foi possível encontrar uma rota
+      // entre " + origem.getNome() + " e " + destino.getNome() + ".", WARNING_COLOR);
+
     } else {
+      // --- CASO UMA ROTA SEJA ENCONTRADA ---
+
+      // 2. Destaca os waypoints de origem e destino com uma cor diferente
+      final Color COR_ORIGEM_DESTINO = new Color(34, 197, 94); // Verde
+      if (waypointsMap != null) {
+        if (waypointsMap.containsKey(origem.getNome())) {
+          waypointsMap.get(origem.getNome()).setButtonColor(COR_ORIGEM_DESTINO);
+        }
+        if (waypointsMap.containsKey(destino.getNome())) {
+          waypointsMap.get(destino.getNome()).setButtonColor(COR_ORIGEM_DESTINO);
+        }
+      }
+
+      // Cria a lista de GeoPositions para a rota
       List<GeoPosition> track = resultado.caminho.stream()
           .map(c -> new GeoPosition(c.getLatitude(), c.getLongitude()))
           .collect(Collectors.toList());
 
-      rotaAtualPainter = new RoutePainter(track);
+      // 3. Cria as GeoPositions de origem e destino para passar ao RoutePainter
+      GeoPosition origemPos = new GeoPosition(origem.getLatitude(), origem.getLongitude());
+      GeoPosition destinoPos = new GeoPosition(destino.getLatitude(), destino.getLongitude());
+
+      // 4. Instancia o RoutePainter com as informações de destaque
+      rotaAtualPainter = new RoutePainter(track, origemPos, destinoPos);
       painter.addPainter(rotaAtualPainter);
+
+      // Ajusta o zoom para focar na rota calculada
       mapViewer.zoomToBestFit(new HashSet<>(track), 0.7);
 
-      // Atualizar painel de resultados
+      // Atualiza o painel de resultados com as informações da rota
       NumberFormat formatador = NumberFormat.getInstance(new Locale("pt", "BR"));
       lblDistanciaTotal.setText(formatador.format(resultado.distanciaTotal) + " km");
 
+      // Melhora a exibição do caminho, mostrando o estado e quebrando a linha
       String caminhoStr = resultado.caminho.stream()
-          .map(Cidade::getNome)
-          .collect(Collectors.joining(" → "));
+          .map(cidade -> cidade.getNome() + " (" + cidade.getEstado() + ")")
+          .collect(Collectors.joining("  →  \n"));
       textAreaRota.setText(caminhoStr);
 
-      // Calcular tempo estimado (assumindo velocidade média de 80 km/h)
-      double tempoHoras = resultado.distanciaTotal / 80.0;
+      // Calcula o tempo estimado de viagem
+      double tempoHoras = resultado.distanciaTotal / 80.0; // Velocidade média de 80 km/h
       int horas = (int) tempoHoras;
       int minutos = (int) ((tempoHoras - horas) * 60);
-      lblTempoEstimado.setText(String.format("%dh %dmin", horas, minutos));
+      lblTempoEstimado.setText(String.format("~ %dh %02dmin", horas, minutos));
 
       lblStatus.setText("Rota calculada com sucesso!");
       lblStatus.setForeground(SUCCESS_COLOR);
 
-      exibirResultadoModerno(resultado);
+      // Mantém a chamada ao seu método de exibição, se existir
+      // exibirResultadoModerno(resultado);
     }
 
+    // Repinta o mapa para aplicar todas as mudanças visuais (rota e waypoints)
     mapViewer.repaint();
   }
 
@@ -542,53 +588,55 @@ public class VisualizadorDeRotas extends JFrame {
     }
   }
 
-  private void exibirResultadoModerno(Navegador.Resultado resultado) {
-    String caminhoStr = resultado.caminho.stream()
-        .map(Cidade::getNome)
-        .collect(Collectors.joining(" ➡️ "));
+  // private void exibirResultadoModerno(Navegador.Resultado resultado) {
+  //   String caminhoStr = resultado.caminho.stream()
+  //       .map(Cidade::getNome)
+  //       .collect(Collectors.joining(" ➡️ "));
 
-    NumberFormat formatador = NumberFormat.getInstance(new Locale("pt", "BR"));
+  //   NumberFormat formatador = NumberFormat.getInstance(new Locale("pt", "BR"));
 
-    // Ícone e título
-    JPanel painelTitulo = new JPanel(new FlowLayout(FlowLayout.LEFT));
-    painelTitulo.setBackground(Color.WHITE);
+  //   // Ícone e título
+  //   JPanel painelTitulo = new JPanel(new FlowLayout(FlowLayout.LEFT));
+  //   painelTitulo.setBackground(Color.WHITE);
 
-    // --- ALTERAÇÃO AQUI ---
-    JLabel icone = new JLabel("🎯");
-    icone.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 32)); // Fonte para o emoji do ícone
+  //   // --- ALTERAÇÃO AQUI ---
+  //   JLabel icone = new JLabel("🎯");
+  //   icone.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 32)); // Fonte para o emoji do ícone
 
-    JLabel titulo = new JLabel("Rota Otimizada Encontrada!");
-    titulo.setFont(new Font("Segoe UI", Font.BOLD, 18));
-    titulo.setForeground(SUCCESS_COLOR);
-    painelTitulo.add(icone);
-    painelTitulo.add(titulo);
+  //   JLabel titulo = new JLabel("Rota Otimizada Encontrada!");
+  //   titulo.setFont(new Font("Segoe UI", Font.BOLD, 18));
+  //   titulo.setForeground(SUCCESS_COLOR);
+  //   painelTitulo.add(icone);
+  //   painelTitulo.add(titulo);
 
-    // Conteúdo
-    JTextArea textArea = new JTextArea();
+  //   // Conteúdo
+  //   JTextArea textArea = new JTextArea();
 
-    // --- ALTERAÇÃO AQUI ---
-    // Adicionando emojis e definindo a fonte correta para o JTextArea
-    double tempoHoras = resultado.distanciaTotal / 80.0;
-    int horas = (int) tempoHoras;
-    int minutos = (int) ((tempoHoras - horas) * 60);
+  //   // --- ALTERAÇÃO AQUI ---
+  //   // Adicionando emojis e definindo a fonte correta para o JTextArea
+  //   double tempoHoras = resultado.distanciaTotal / 80.0;
+  //   int horas = (int) tempoHoras;
+  //   int minutos = (int) ((tempoHoras - horas) * 60);
 
-    textArea.setText("🛣️ ROTA:\n" + caminhoStr + "\n\n" + "📏 DISTÂNCIA TOTAL:\n" + formatador.format(resultado.distanciaTotal) + " km\n\n" + "⏱️ TEMPO ESTIMADO:\n" + String.format("%dh %dmin", horas, minutos));
+  //   textArea.setText(
+  //       "🛣️ ROTA:\n" + caminhoStr + "\n\n" + "📏 DISTÂNCIA TOTAL:\n" + formatador.format(resultado.distanciaTotal)
+  //           + " km\n\n" + "⏱️ TEMPO ESTIMADO:\n" + String.format("%dh %dmin", horas, minutos));
 
-    textArea.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 12));
-    textArea.setEditable(false);
-    textArea.setBackground(new Color(248, 250, 252));
-    textArea.setBorder(new EmptyBorder(15, 15, 15, 15));
-    textArea.setLineWrap(true);
-    textArea.setWrapStyleWord(true);
+  //   textArea.setFont(new Font("Segoe UI Emoji", Font.PLAIN, 12));
+  //   textArea.setEditable(false);
+  //   textArea.setBackground(new Color(248, 250, 252));
+  //   textArea.setBorder(new EmptyBorder(15, 15, 15, 15));
+  //   textArea.setLineWrap(true);
+  //   textArea.setWrapStyleWord(true);
 
-    JScrollPane scrollPane = new JScrollPane(textArea);
-    scrollPane.setBorder(null);
+  //   JScrollPane scrollPane = new JScrollPane(textArea);
+  //   scrollPane.setBorder(null);
 
-    // Botão
-    // --- ALTERAÇÃO AQUI ---
-    JButton btnFechar = criarBotaoPrimario("✅ Entendi", SUCCESS_COLOR);
-    btnFechar.setFont(new Font("Segoe UI Emoji", Font.BOLD, 12)); // Fonte para o emoji no botão
-  }
+  //   // Botão
+  //   // --- ALTERAÇÃO AQUI ---
+  //   JButton btnFechar = criarBotaoPrimario("✅ Entendi", SUCCESS_COLOR);
+  //   btnFechar.setFont(new Font("Segoe UI Emoji", Font.BOLD, 12)); // Fonte para o emoji no botão
+  // }
 
   private void mostrarMensagem(String titulo, String mensagem, Color cor) {
     JOptionPane.showMessageDialog(this, mensagem, titulo, JOptionPane.INFORMATION_MESSAGE);

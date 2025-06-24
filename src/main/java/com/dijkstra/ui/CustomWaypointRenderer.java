@@ -1,7 +1,7 @@
-package com.djikstra.ui;
+package com.dijkstra.ui;
 
 import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.viewer.WaypointRenderer; // <-- IMPORT CORRETO
+import org.jxmapviewer.viewer.WaypointRenderer;
 import java.awt.*;
 
 /**
@@ -9,7 +9,6 @@ import java.awt.*;
  * botão)
  * no mapa, em vez do ícone padrão.
  */
-// A correção principal está aqui: implementa WaypointRenderer diretamente.
 public class CustomWaypointRenderer implements WaypointRenderer<CustomWaypoint> {
 
   /**

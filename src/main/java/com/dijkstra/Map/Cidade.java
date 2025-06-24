@@ -1,4 +1,4 @@
-package com.djikstra.Map;
+package com.dijkstra.Map;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -12,12 +12,14 @@ public class Cidade {
   private final String nome;
   private final double latitude;
   private final double longitude;
+  private final String estado;
   private final List<Aresta> vizinhos = new LinkedList<>();
 
-  public Cidade(String nome, double latitude, double longitude) {
+  public Cidade(String nome, double latitude, double longitude, String estado) {
     this.nome = nome;
     this.latitude = latitude;
     this.longitude = longitude;
+    this.estado = estado;
   }
 
   public void adicionarVizinho(Aresta aresta) {
@@ -41,9 +43,15 @@ public class Cidade {
     return vizinhos;
   }
 
+  public String getEstado() { // NOVO GETTER
+    return estado;
+  }
+
   @Override
   public String toString() {
-    return this.nome; // Usado para exibição nos JComboBox
+    // É uma boa prática sobrescrever o toString, embora não seja usado pelo
+    // renderer.
+    return nome + " - (" + estado + ")";
   }
 
   // É importante sobrescrever equals e hashCode para o correto funcionamento em

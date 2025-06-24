@@ -1,4 +1,4 @@
-package com.djikstra.Map;
+package com.dijkstra.Map;
 
 /**
  * Representa uma aresta (uma estrada/conexão) no grafo.

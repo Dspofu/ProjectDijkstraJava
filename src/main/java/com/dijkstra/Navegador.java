@@ -1,10 +1,10 @@
-package com.djikstra;
-
-import com.djikstra.Map.Aresta;
-import com.djikstra.Map.Cidade;
-import com.djikstra.Map.Grafo;
+package com.dijkstra;
 
 import java.util.*;
+
+import com.dijkstra.Map.Aresta;
+import com.dijkstra.Map.Cidade;
+import com.dijkstra.Map.Grafo;
 
 /**
  * Lógica do algoritmo de Dijkstra para encontrar o caminho mais curto.
