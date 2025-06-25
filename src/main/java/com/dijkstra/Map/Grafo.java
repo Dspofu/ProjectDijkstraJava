@@ -1,8 +1,10 @@
 package com.dijkstra.Map;
 
+import java.awt.Component;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -77,8 +79,6 @@ public class Grafo {
     grafo.adicionarArestaBidirecional("São Paulo", "Campo Grande", 893);
     grafo.adicionarArestaBidirecional("Rio de Janeiro", "Vitória", 418);
     grafo.adicionarArestaBidirecional("Rio de Janeiro", "Belo Horizonte", 340);
-    grafo.adicionarArestaBidirecional("Rio de Janeiro", "Curitiba", 675);
-    grafo.adicionarArestaBidirecional("Rio de Janeiro", "Porto Alegre", 1133);
     grafo.adicionarArestaBidirecional("Belo Horizonte", "Goiânia", 705);
     grafo.adicionarArestaBidirecional("Belo Horizonte", "Salvador", 971);
     grafo.adicionarArestaBidirecional("Belo Horizonte", "Brasília", 625);
@@ -101,10 +101,6 @@ public class Grafo {
     grafo.adicionarArestaBidirecional("São Luís", "Belém", 482);
     grafo.adicionarArestaBidirecional("São Luís", "Palmas", 894);
     grafo.adicionarArestaBidirecional("Brasília", "Goiânia", 173);
-    grafo.adicionarArestaBidirecional("Brasília", "Cuiabá", 876);
-    grafo.adicionarArestaBidirecional("Brasília", "Palmas", 624);
-    grafo.adicionarArestaBidirecional("Brasília", "Salvador", 1061);
-    grafo.adicionarArestaBidirecional("Brasília", "Campo Grande", 869);
     grafo.adicionarArestaBidirecional("Palmas", "Belém", 973);
     grafo.adicionarArestaBidirecional("Palmas", "Teresina", 745);
     grafo.adicionarArestaBidirecional("Belém", "Macapá", 330);
@@ -126,7 +122,13 @@ public class Grafo {
     grafo.adicionarArestaBidirecional("Cuiabá", "Manaus", 1448); // MT-AM
     grafo.adicionarArestaBidirecional("Cuiabá", "Belém", 1555); // MT-PA
     grafo.adicionarArestaBidirecional("Manaus", "Rio Branco", 1183); // AM-AC
+    grafo.adicionarArestaBidirecional("Boa Vista", "Belém", 1850); // AM-AC
 
     return grafo;
+  }
+
+  public List<Aresta> getVizinhos(Cidade c) {
+    // TODO Auto-generated method stub
+    return cidades.get(c.getNome()).getVizinhos();
   }
 }

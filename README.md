@@ -42,6 +42,8 @@ O algoritmo de Dijkstra é utilizado para encontrar o caminho mais curto entre n
   # Projeto em funcionamento
   
   <img src="./guide/imgs/example.png">
+  <img src="./guide/imgs/example2.png">
+  <img src="./guide/imgs/example3.png">
 
 ## 🧑‍💻 Contribuidors
 
